@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>ServReg {{version}}</title>
+    <title>ServReg {{ version }}</title>
 
     <!-- Bootstrap -->
     <link href="/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -34,7 +34,7 @@
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
-                    <a href="/" class="site_title"><i class="fa fa-paw"></i> <span>ServReg {{version}}</span></a>
+                    <a href="/" class="site_title"><i class="fa fa-paw"></i> <span>ServReg {{ version }}</span></a>
                 </div>
 
                 <div class="clearfix"></div>
@@ -97,53 +97,25 @@
                                         <th>port</th>
                                         <th>First time seen</th>
                                         <th>Last time seen</th>
-                                        <th>Uptime</th>
                                         <th>Alive</th>
                                     </tr>
                                     </thead>
 
 
                                     <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>hello.world.service</td>
-                                        <td>192.168.0.100</td>
-                                        <td>80</td>
-                                        <td>2016-12-08 16:45:03.073327</td>
-                                        <td>2016-12-07 16:45:03.073327</td>
-                                        <td>10 days</td>
-                                        <td class="bg-success">True</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>hello.world.service.2</td>
-                                        <td>192.168.0.100</td>
-                                        <td>80</td>
-                                        <td>2016-12-08 16:45:03.073327</td>
-                                        <td>2016-12-07 16:45:03.073327</td>
-                                        <td>10 days</td>
-                                        <td class="bg-success">True</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>hello.world.service.3</td>
-                                        <td>192.168.0.100</td>
-                                        <td>80</td>
-                                        <td>2016-12-08 16:45:03.073327</td>
-                                        <td>2016-12-07 16:45:03.073327</td>
-                                        <td>10 days</td>
-                                        <td class="bg-success">True</td>
-                                    </tr>
-                                    <tr>
-                                        <td>4</td>
-                                        <td>hello.world.service.4</td>
-                                        <td>192.168.0.100</td>
-                                        <td>80</td>
-                                        <td>2016-12-08 16:45:03.073327</td>
-                                        <td>2016-12-07 16:45:03.073327</td>
-                                        <td>10 days</td>
-                                        <td class="bg-success">True</td>
-                                    </tr>
+
+                                    {% for service in services %}
+                                        <tr>
+                                            <td>{{ service.id }}</td>
+                                            <td>{{ service.name }}</td>
+                                            <td>{{ service.host }}</td>
+                                            <td>{{ service.port }}</td>
+                                            <td>{{ service.human_readable_first_seen() }}</td>
+                                            <td>{{ service.human_readable_last_seen() }}</td>
+                                            <td class="{% if service.is_alive() %}bg-success{% else %}bg-danger{% end %}">
+                                                {{ service.is_alive() }}</td>
+                                        </tr>
+                                    {% end %}
                                     </tbody>
                                 </table>
                             </div>
