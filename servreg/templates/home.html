@@ -72,74 +72,39 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Services</h3>
+                        <h3>Welcome to ServReg {{ version }}</h3>
                     </div>
 
                 </div>
 
                 <div class="clearfix"></div>
 
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2>Known services</h2>
+                <p>This is a service registry built with the
+                    <a href="https://github.com/vladcalin/pymicroservice">pymicroservice</a> library.
+                </p>
 
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <p class="text-muted font-13 m-b-30">
-                                    Check the <a href="">documenation</a> for more info
-                                </p>
-                                <table id="datatable-buttons" class="table table-striped table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>host</th>
-                                        <th>port</th>
-                                        <th>First time seen</th>
-                                        <th>Last time seen</th>
-                                        <th>Alive</th>
-                                    </tr>
-                                    </thead>
+                <p>Exposed methods:</p>
 
+                <ul>
+                    <li><code>get_service_specs()</code> - get the service specifications</li>
+                    <li><code>ping(name:str, host:str, port:int)</code> - acknowledge a service </li>
+                    <li><code>locate_service(name:str)</code> - locates instances of a given service</li>
+                </ul>
 
-                                    <tbody>
-
-                                    {% for service in services %}
-                                    <tr>
-                                        <td>{{ service.id }}</td>
-                                        <td>{{ service.name }}</td>
-                                        <td>{{ service.host }}</td>
-                                        <td>{{ service.port }}</td>
-                                        <td>{{ service.human_readable_first_seen() }}</td>
-                                        <td>{{ service.human_readable_last_seen() }}</td>
-                                        <td class="{% if service.is_alive() %}bg-success{% else %}bg-danger{% end %}">
-                                            {{ service.is_alive() }}
-                                        </td>
-                                    </tr>
-                                    {% end %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
             </div>
         </div>
-        <!-- /page content -->
-
-        <!-- footer content -->
-        <footer>
-            <div class="pull-right">
-                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-            </div>
-            <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
     </div>
+    <!-- /page content -->
+
+    <!-- footer content -->
+    <footer>
+        <div class="pull-right">
+            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+        </div>
+        <div class="clearfix"></div>
+    </footer>
+    <!-- /footer content -->
+</div>
 </div>
 
 <!-- jQuery -->
@@ -175,47 +140,7 @@
 <!-- Datatables -->
 <script>
     $(document).ready(function () {
-        var handleDataTableButtons = function () {
-            var localDatatable = $("#datatable-buttons");
-            if (localDatatable.length) {
-                localDatatable.DataTable({
-                    buttons: [
-                        {
-                            extend: "copy",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "csv",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "excel",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "pdfHtml5",
-                            className: "btn-sm"
-                        },
-                        {
-                            extend: "print",
-                            className: "btn-sm"
-                        }
-                    ]
-                });
-            }
-        };
 
-        TableManageButtons = function () {
-            "use strict";
-            return {
-                init: function () {
-                    handleDataTableButtons();
-                }
-            };
-        }();
-
-
-        TableManageButtons.init();
     });
 </script>
 <!-- /Datatables -->

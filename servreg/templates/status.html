@@ -42,8 +42,9 @@
                 <!-- sidebar menu -->
                 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                     <ul class="nav side-menu">
+                        <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
                         <li><a href="/services"><i class="fa fa-list-ul"></i> Services</a></li>
-                        <li><a href="/status"><i class="fa fa-question-circle"></i> Status</a></li>
+                        <li><a href="/status?hours=24"><i class="fa fa-question-circle"></i> Status</a></li>
                     </ul>
                 </div>
                 <!-- /sidebar menu -->
@@ -78,13 +79,24 @@
 
                 <div class="clearfix"></div>
 
+                <div class="row btn-group">
+
+                    <a href="/status?hours=168"><button class="btn btn-default">Last 7 days</button></a>
+                    <a href="/status?hours=24"><button class="btn btn-default">Last 24 hours</button></a>
+                    <a href="/status?hours=12"><button class="btn btn-default">Last 12 hours</button></a>
+                    <a href="/status?hours=1"><button class="btn btn-default">Last hour</button></a>
+
+                </div>
+
+                <div class="clearfix"></div>
+
                 <div class="row tile_count">
                     <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                          <span class="count_top"><i class="fa fa-laptop"></i> Total registered services</span>
+                          <span class="count_top"><i class="fa fa-laptop"></i> Total registered <br>services</span>
                           <div class="count">{{service_count}}</div>
                     </div>
                     <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                          <span class="count_top"><i class="fa fa-envelope-o"></i> Total requests today</span>
+                          <span class="count_top"><i class="fa fa-envelope-o"></i> Total requests <br>today</span>
                           <div class="count">{{req_count_today}}</div>
                     </div>
                     <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">

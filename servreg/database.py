@@ -84,8 +84,8 @@ class PerformanceParameters(Base):
         session.commit()
 
     @classmethod
-    def get_items_from_last_24h(cls, session):
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    def get_items_from_last_hours(cls, session, hours):
+        yesterday = datetime.datetime.now() - datetime.timedelta(hours=hours)
         return [x for x in
                 session.query(cls).filter(cls.timestamp >= yesterday)]
 

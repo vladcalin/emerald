@@ -38,7 +38,8 @@ class StatusHandler(RequestHandler):
     @coroutine
     def get(self):
         session = Session()
-        items = PerformanceParameters.get_items_from_last_24h(session)
+        hours = self.get_argument("hours", 24)
+        items = PerformanceParameters.get_items_from_last_hours(session, hours=int(hours))
         service_count = session.query(Service).count()
         req_count_today = sum([x.request_count for x in items])
         perf_count = session.query(PerformanceParameters).count()
@@ -47,10 +48,16 @@ class StatusHandler(RequestHandler):
                     service_count=service_count, req_count_today=req_count_today, perf_count=perf_count)
 
 
+class HomeHandler(RequestHandler):
+    @coroutine
+    def get(self):
+        self.render("home.html", version=__version__)
+
+
 class IndexHandler(RequestHandler):
     @coroutine
     def get(self):
-        self.redirect("/services", permanent=True)
+        self.redirect("/home", permanent=True)
 
 
 class ServiceRegistry(PyMicroService):
@@ -65,6 +72,7 @@ class ServiceRegistry(PyMicroService):
         (r"/", IndexHandler),
         (r"/services", ServicesHandler),
         (r"/status", StatusHandler),
+        (r"/home", HomeHandler),
     ]
 
     # create your templates
