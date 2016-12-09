@@ -1,3 +1,4 @@
 pymicroservice
 sqlalchemy
 humanize
+psutil

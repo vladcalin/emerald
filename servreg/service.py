@@ -1,16 +1,22 @@
 import os
 import datetime
+import time
+import threading
+import logging
+import logging.handlers
 
 from tornado.web import RequestHandler
 from tornado.gen import coroutine
 import click
+import psutil
 
 from pymicroservice.core.microservice import PyMicroService
 from pymicroservice.core.decorators import public_method, private_api_method
 
 import servreg.static
 import servreg.templates
-from servreg.database import init_database, Service, Base, Session
+from servreg.database import init_database, Service, Base, Session, PerformanceParameters
+from . import __version__
 
 STATIC_DIR = os.path.dirname(os.path.abspath(servreg.static.__file__))
 TEMPLATES_DIR = os.path.dirname(os.path.abspath(servreg.templates.__file__))
@@ -19,11 +25,32 @@ print(TEMPLATES_DIR)
 
 
 # example custom request handler
-class IndexHandler(RequestHandler):
+class ServicesHandler(RequestHandler):
     @coroutine
     def get(self):
         session = Session()
-        self.render("index.html", version="0.0.1dev", services=session.query(Service).filter())
+        items = [s for s in session.query(Service).filter()]
+        session.close()
+        self.render("index.html", version=__version__, services=list(sorted(items, key=lambda x: x.is_alive())))
+
+
+class StatusHandler(RequestHandler):
+    @coroutine
+    def get(self):
+        session = Session()
+        items = PerformanceParameters.get_items_from_last_24h(session)
+        service_count = session.query(Service).count()
+        req_count_today = sum([x.request_count for x in items])
+        perf_count = session.query(PerformanceParameters).count()
+        session.close()
+        self.render("status.html", version=__version__, items=items, max_memory=psutil.virtual_memory().total,
+                    service_count=service_count, req_count_today=req_count_today, perf_count=perf_count)
+
+
+class IndexHandler(RequestHandler):
+    @coroutine
+    def get(self):
+        self.redirect("/services", permanent=True)
 
 
 class ServiceRegistry(PyMicroService):
@@ -36,6 +63,8 @@ class ServiceRegistry(PyMicroService):
 
     extra_handlers = [
         (r"/", IndexHandler),
+        (r"/services", ServicesHandler),
+        (r"/status", StatusHandler),
     ]
 
     # create your templates
@@ -46,13 +75,12 @@ class ServiceRegistry(PyMicroService):
         (r"/static", STATIC_DIR),
     ]
 
-    def __init__(self, host, port, dburl):
+    def __init__(self, host, port, dburl, accesslog):
         self.host = host
         self.port = port
-
         self.db_engine = init_database(dburl)
-        Session.configure(bind=self.db_engine)
-        Base.metadata.create_all(self.db_engine)
+
+        self.init_access_log(accesslog)
 
         super(ServiceRegistry, self).__init__()
 
@@ -89,14 +117,44 @@ class ServiceRegistry(PyMicroService):
             name = name.replace("?", "_")
         return name
 
+    def init_access_log(self, accesslog):
+        logger = logging.getLogger("tornado.access")
+
+        file_handler = logging.handlers.TimedRotatingFileHandler(accesslog, when="midnight")
+        file_handler.setFormatter(logging.Formatter("%(asctime)s - %(message)s"))
+        logger.addHandler(file_handler)
+
+
+class PerformanceMonitorThread(threading.Thread):
+    def __init__(self, dburl, access_log):
+        self.db_engine = init_database(dburl)
+        self.access_log = access_log
+        super(PerformanceMonitorThread, self).__init__()
+
+    def run(self):
+        while True:
+            session = Session(bind=self.db_engine)
+            PerformanceParameters.save_current_params(session=session, access_log_path=self.access_log)
+            session.close()
+            time.sleep(60)
+
 
 @click.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", type=int, default=8000)
 @click.option("--dburl", default="sqlite:///servreg.sqlite3")
-def main(host, port, dburl):
+@click.option("--accesslog", default="access.log")
+def main(host, port, dburl, accesslog):
     print(host, port, dburl)
-    service = ServiceRegistry(host, port, dburl)
+    engine = init_database(dburl)
+    Session.configure(bind=engine)
+
+    Base.metadata.create_all(engine)
+
+    perfmon = PerformanceMonitorThread(dburl, accesslog)
+    perfmon.start()
+
+    service = ServiceRegistry(host, port, dburl, accesslog)
     service.start()
 
 
