@@ -206,6 +206,7 @@
     $(document).ready(function () {
         Morris.Line({
             element: 'cpu_usage',
+            pointSize: 0,
             xkey: 'timestamp',
             ykeys: ['value'],
             ymax: 100,
@@ -218,6 +219,7 @@
 
         Morris.Line({
             element: 'memory_usage',
+            pointSize: 0,
             xkey: 'timestamp',
             ykeys: ['value'],
             ymax: {{max_memory}},
@@ -229,6 +231,7 @@
         });
 
         Morris.Line({
+            pointSize: 0,
             element: 'response_time',
             xkey: 'timestamp',
             ykeys: ['value'],
@@ -242,6 +245,7 @@
 
         Morris.Line({
             element: 'request_count',
+            pointSize: 0,
             xkey: 'timestamp',
             ykeys: ['value'],
             ymax: 'auto',
