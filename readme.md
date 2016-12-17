@@ -41,7 +41,7 @@ To run the tests, use the command
 ```
 
 Start the service
-~~~~~~~~~~~~~~~~~
+-----------------
 
 In order to start the service at ``http://0.0.0.0:5000/api``, use the command
 
