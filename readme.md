@@ -54,7 +54,7 @@ The following parameters can be specified:
 - ``--host`` = the address to bind
 - ``--port`` = the port to bind
 - ``--dburl`` = a database url (as in the 
-  (sqlalchemy)[http://docs.sqlalchemy.org/en/latest/dialects/index.html] 
+  [sqlalchemy](http://docs.sqlalchemy.org/en/latest/dialects/index.html) 
   specifications). Here are some quick examples:
     - using SQLite: ``sqlite:///mydatabase.db``, 
       ``sqlite:////etc/run/servreg/servreg.db``, ``sqlite://:memory:``
