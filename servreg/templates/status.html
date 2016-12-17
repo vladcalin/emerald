@@ -79,184 +79,82 @@
 
                 <div class="clearfix"></div>
 
-                <div class="row btn-group">
-
-                    <a href="/status?hours=168"><button class="btn btn-default">Last 7 days</button></a>
-                    <a href="/status?hours=24"><button class="btn btn-default">Last 24 hours</button></a>
-                    <a href="/status?hours=12"><button class="btn btn-default">Last 12 hours</button></a>
-                    <a href="/status?hours=1"><button class="btn btn-default">Last hour</button></a>
-
-                </div>
-
-                <div class="clearfix"></div>
 
                 <div class="row tile_count">
                     <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                          <span class="count_top"><i class="fa fa-laptop"></i> Total registered <br>services</span>
-                          <div class="count">{{service_count}}</div>
+                        <span class="count_top">Total services</span>
+                        <div class="count">{{ service_count }}</div>
                     </div>
                     <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                          <span class="count_top"><i class="fa fa-envelope-o"></i> Total requests <br>today</span>
-                          <div class="count">{{req_count_today}}</div>
+                        <span class="count_top">Performance counters</span>
+                        <div class="count">{{ perf_count }}</div>
                     </div>
                     <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                          <span class="count_top"><i class="fa fa-database"></i> Total performance <br>counters stored</span>
-                          <div class="count">{{perf_count}}</div>
+                        <span class="count_top">Requests today</span>
+                        <div class="count">{{ req_count_today }}</div>
                     </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                        <span class="count_top">Average response time</span>
+                        <div class="count">{{ avg_response_time }} ms</div>
+                    </div>
+
                 </div>
 
-                <div class="clearfix"></div>
+                <h4>Machine stats</h4>
 
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="x_panel">
-                        <div class="x_title">
-                            <h2>CPU Usage
-                            </h2>
-
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="x_content2">
-                            <div id="cpu_usage" style="width:100%; height:200px;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="clearfix"></div>
-
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="x_panel">
-                        <div class="x_title">
-                            <h2>Memory usage
-                            </h2>
-
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="x_content2">
-                            <div id="memory_usage" style="width:100%; height:200px;"></div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        Cpu usage: {{ cpu_current }} %
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info" data-transitiongoal="25" aria-valuenow="25"
+                                 style="width: {{ cpu_current }}%;"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="clearfix"></div>
-
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="x_panel">
-                        <div class="x_title">
-                            <h2>Average response time
-                                <small>(in miliseconds)</small>
-                            </h2>
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="x_content2">
-                            <div id="response_time" style="width:100%; height:200px;"></div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        Memory in use: {{ memory_used }} out of {{ max_memory }}
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info" data-transitiongoal="25" aria-valuenow="25"
+                                 style="width: {{ memory_percent }}%;"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="clearfix"></div>
 
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="x_panel">
-                        <div class="x_title">
-                            <h2>Number of requests
-                                <small>(in the last 48h)</small>
-                            </h2>
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="x_content2">
-                            <div id="request_count" style="width:100%; height:200px;"></div>
-                        </div>
+                <!-- /page content -->
+
+                <!-- footer content -->
+                <footer>
+                    <div class="pull-right">
+                        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
                     </div>
-                </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
             </div>
-
         </div>
-        <!-- /page content -->
 
-        <!-- footer content -->
-        <footer>
-            <div class="pull-right">
-                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-            </div>
-            <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
-    </div>
-</div>
-
-<!-- jQuery -->
-<script src="/static/vendors/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- FastClick -->
-<script src="/static/vendors/fastclick/lib/fastclick.js"></script>
-<!-- NProgress -->
-<script src="/static/vendors/nprogress/nprogress.js"></script>
-<!-- iCheck -->
-<script src="/static/vendors/iCheck/icheck.min.js"></script>
-<!-- morris.js -->
-<script src="/static/vendors/raphael/raphael.min.js"></script>
-<script src="/static/vendors/morris.js/morris.min.js"></script>
+        <!-- jQuery -->
+        <script src="/static/vendors/jquery/dist/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- FastClick -->
+        <script src="/static/vendors/fastclick/lib/fastclick.js"></script>
+        <!-- NProgress -->
+        <script src="/static/vendors/nprogress/nprogress.js"></script>
+        <!-- iCheck -->
+        <script src="/static/vendors/iCheck/icheck.min.js"></script>
+        <!-- morris.js -->
+        <script src="/static/vendors/raphael/raphael.min.js"></script>
+        <script src="/static/vendors/morris.js/morris.min.js"></script>
 
 
-<!-- Custom Theme Scripts -->
-<script src="/static/build/js/custom.min.js"></script>
+        <!-- Custom Theme Scripts -->
+        <script src="/static/build/js/custom.min.js"></script>
 
-<script>
-    $(document).ready(function () {
-        Morris.Line({
-            element: 'cpu_usage',
-            pointSize: 0,
-            xkey: 'timestamp',
-            ykeys: ['value'],
-            ymax: 100,
-            labels: ['Value'],
-            hideHover: 'auto',
-            lineColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
-            data: {% raw [{"timestamp": i.sanitized_timestamp(), "value": i.cpu_usage} for i in items] %},
-            resize: true
-        });
-
-        Morris.Line({
-            element: 'memory_usage',
-            pointSize: 0,
-            xkey: 'timestamp',
-            ykeys: ['value'],
-            ymax: {{max_memory}},
-            labels: ['Value'],
-            hideHover: 'auto',
-            lineColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
-            data: {% raw [{"timestamp": i.sanitized_timestamp(), "value": i.memory_usage_current} for i in items] %},
-            resize: true
-        });
-
-        Morris.Line({
-            pointSize: 0,
-            element: 'response_time',
-            xkey: 'timestamp',
-            ykeys: ['value'],
-            ymax: 'auto',
-            labels: ['Value'],
-            hideHover: 'auto',
-            lineColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
-            data: {% raw [{"timestamp": i.sanitized_timestamp(), "value": i.avg_response_time} for i in items] %},
-            resize: true
-        });
-
-        Morris.Line({
-            element: 'request_count',
-            pointSize: 0,
-            xkey: 'timestamp',
-            ykeys: ['value'],
-            ymax: 'auto',
-            labels: ['Value'],
-            hideHover: 'auto',
-            lineColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
-            data: {% raw [{"timestamp": i.sanitized_timestamp(), "value": i.request_count} for i in items] %},
-            resize: true
-        });
-
-    });
-</script>
+        <script>
+        </script>
 </body>
 </html>

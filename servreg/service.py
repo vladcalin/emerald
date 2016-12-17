@@ -9,6 +9,7 @@ from tornado.web import RequestHandler
 from tornado.gen import coroutine
 import click
 import psutil
+import humanize
 
 from pymicroservice.core.microservice import PyMicroService
 from pymicroservice.core.decorators import public_method, private_api_method
@@ -38,14 +39,28 @@ class StatusHandler(RequestHandler):
     @coroutine
     def get(self):
         session = Session()
+
         hours = self.get_argument("hours", 24)
         items = PerformanceParameters.get_items_from_last_hours(session, hours=int(hours))
         service_count = session.query(Service).count()
+
         req_count_today = sum([x.request_count for x in items])
         perf_count = session.query(PerformanceParameters).count()
+
+        relevant_items = [x.avg_response_time for x in items if x.avg_response_time != 0]
+        if relevant_items:
+            avg_response_time = sum(relevant_items) / len(relevant_items)
+        else:
+            avg_response_time = 0
+
         session.close()
-        self.render("status.html", version=__version__, items=items, max_memory=psutil.virtual_memory().total,
-                    service_count=service_count, req_count_today=req_count_today, perf_count=perf_count)
+        memory_stats = psutil.virtual_memory()
+        self.render("status.html", version=__version__,
+                    max_memory=humanize.naturalsize(memory_stats.total),
+                    memory_used=humanize.naturalsize(memory_stats.used),
+                    avg_response_time=avg_response_time,
+                    service_count=service_count, req_count_today=req_count_today, perf_count=perf_count,
+                    cpu_current=psutil.cpu_percent(), memory_percent=(memory_stats.used / memory_stats.total) * 100)
 
 
 class HomeHandler(RequestHandler):
