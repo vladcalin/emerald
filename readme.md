@@ -20,11 +20,8 @@ library and exposes the following methods:
   returns a list of ``{host: ..., port: ...}` (multiple instances of the same service
   can run at the same time).
   
-Usage
------
-
 Installation
-~~~~~~~~~~~~
+------------
 
 ```
     pip install servreg
