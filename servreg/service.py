@@ -16,7 +16,7 @@ from pymicroservice.core.decorators import public_method, private_api_method
 
 import servreg.static
 import servreg.templates
-from servreg.database import init_database, Service, Base, Session, PerformanceParameters
+from servreg.database import init_database, Service, Base, Session
 from . import __version__
 
 STATIC_DIR = os.path.dirname(os.path.abspath(servreg.static.__file__))
@@ -40,27 +40,15 @@ class StatusHandler(RequestHandler):
     def get(self):
         session = Session()
 
-        hours = self.get_argument("hours", 24)
-        items = PerformanceParameters.get_items_from_last_hours(session, hours=int(hours))
         service_count = session.query(Service).count()
-
-        req_count_today = sum([x.request_count for x in items])
-        perf_count = session.query(PerformanceParameters).count()
-
-        relevant_items = [x.avg_response_time for x in items if x.avg_response_time != 0]
-        if relevant_items:
-            avg_response_time = sum(relevant_items) / len(relevant_items)
-        else:
-            avg_response_time = 0
 
         session.close()
         memory_stats = psutil.virtual_memory()
         self.render("status.html", version=__version__,
                     max_memory=humanize.naturalsize(memory_stats.total),
                     memory_used=humanize.naturalsize(memory_stats.used),
-                    avg_response_time=avg_response_time,
-                    service_count=service_count, req_count_today=req_count_today, perf_count=perf_count,
-                    cpu_current=psutil.cpu_percent(), memory_percent=(memory_stats.used / memory_stats.total) * 100)
+                    service_count=service_count, cpu_current=psutil.cpu_percent(),
+                    memory_percent=(memory_stats.used / memory_stats.total) * 100)
 
 
 class HomeHandler(RequestHandler):
@@ -148,20 +136,6 @@ class ServiceRegistry(PyMicroService):
         logger.addHandler(file_handler)
 
 
-class PerformanceMonitorThread(threading.Thread):
-    def __init__(self, dburl, access_log):
-        self.db_engine = init_database(dburl)
-        self.access_log = access_log
-        super(PerformanceMonitorThread, self).__init__()
-
-    def run(self):
-        while True:
-            session = Session(bind=self.db_engine)
-            PerformanceParameters.save_current_params(session=session, access_log_path=self.access_log)
-            session.close()
-            time.sleep(60)
-
-
 @click.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", type=int, default=8000)
@@ -173,9 +147,6 @@ def main(host, port, dburl, accesslog):
     Session.configure(bind=engine)
 
     Base.metadata.create_all(engine)
-
-    perfmon = PerformanceMonitorThread(dburl, accesslog)
-    perfmon.start()
 
     service = ServiceRegistry(host, port, dburl, accesslog)
     service.start()
