@@ -1,5 +1,5 @@
-Service registry
-================
+Emerald - a service registry
+============================
 
 This is a simple service registry compatible with [pymicroservice](http://github.com/vladcalin/pymicroservice) based 
 services which uses JSON RPC protocol for communication and sqlalchemy for data persistance.
@@ -23,21 +23,16 @@ library and exposes the following methods:
 Installation
 ------------
 
-```
-    pip install servreg
-```
-
-or 
 
 ```
-    git clone https://github.com/vladcalin/servreg.git
-    python servreg/setup.py install
+    git clone https://github.com/vladcalin/emerald.git
+    python emerald/setup.py install
 ```
 
 To run the tests, use the command
 
 ```
-    python servreg/setup.py test
+    python emerald/setup.py test
 ```
 
 Start the service
@@ -46,7 +41,7 @@ Start the service
 In order to start the service at ``http://0.0.0.0:5000/api``, use the command
 
 ```
-    servreg --host=0.0.0.0 --port=0.0.0.0 --dburl=sqlite:///:memory: --accesslog=access.log
+    emerald --host=0.0.0.0 --port=0.0.0.0 --dburl=sqlite:///:memory: --accesslog=access.log
 ```
 
 The following parameters can be specified:
