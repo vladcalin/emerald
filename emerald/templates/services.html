@@ -1,0 +1,38 @@
+{% extends "template.html" %}
+{% block content %}
+<table id="datatable-buttons" class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>host</th>
+        <th>port</th>
+        <th>First time seen</th>
+        <th>Last time seen</th>
+        <th>Alive</th>
+    </tr>
+    </thead>
+
+
+    <tbody>
+
+    {% for service in services %}
+    <tr>
+        <td>{{ service.id }}</td>
+        <td>{{ service.name }}</td>
+        <td>{{ service.host }}</td>
+        <td>{{ service.port }}</td>
+        <td>{{ service.human_readable_first_seen() }}</td>
+        <td>{{ service.human_readable_last_seen() }}</td>
+        <td><span class="{% if service.is_alive() %}green{% else %}red{% end %}-text">{{ service.is_alive() }}</span>
+
+        </td>
+    </tr>
+    {% end %}
+    </tbody>
+</table>
+
+<script>
+</script>
+
+{% end %}

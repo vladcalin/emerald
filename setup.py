@@ -20,11 +20,11 @@ def get_meta_attr_from_string(meta_attr, content):
     return result.group(1)
 
 
-module_content = get_file_content(os.path.join("servreg", "__init__.py"))
+module_content = get_file_content(os.path.join("emerald", "__init__.py"))
 
 setup(
     # project metadata
-    name="servreg",
+    name="emerald",
     version=get_meta_attr_from_string("__version__", module_content),
     license="MIT",
 
@@ -39,7 +39,7 @@ setup(
     keywords=["microservice", "cloud", "rpc", "compute", "service", "service", "regiistry"],
     classifiers=[
     ],
-    url="https://github.com/vladcalin/servreg",
+    url="https://github.com/vladcalin/emerald",
 
     zip_safe=False,
 
@@ -53,7 +53,7 @@ setup(
     install_requires=read_dependencies("requirements.txt"),
     entry_points={
         "console_scripts": [
-            "servreg = servreg.service:main"
+            "emerald = emerald.service:main"
         ]
     }
 )

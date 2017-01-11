@@ -1,0 +1,30 @@
+{% extends "template.html" %}
+{% block content %}
+
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <p>Total services: {{ service_count }}</p>
+
+    <h5>Machine stats</h5>
+
+    <div class="row">
+        <div class="col s6">
+            Cpu usage: {{ cpu_current }} %
+            <div class="progress">
+                <div class="determinate" style="width: {{ cpu_current }}%;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6">
+            Memory in use: {{ memory_used }} out of {{ max_memory }}
+            <div class="progress">
+                <div class="determinate" style="width: {{ memory_percent }}%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- /page content -->
+</div>
+{% end %}
