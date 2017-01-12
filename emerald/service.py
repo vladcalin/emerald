@@ -11,8 +11,7 @@ import click
 import psutil
 import humanize
 
-from pymicroservice.core.microservice import PyMicroService
-from pymicroservice.core.decorators import public_method, private_api_method
+from gemstone import MicroService, public_method, private_api_method
 
 import emerald.static
 import emerald.templates
@@ -63,7 +62,7 @@ class IndexHandler(RequestHandler):
         self.redirect("/home", permanent=True)
 
 
-class ServiceRegistry(PyMicroService):
+class EmeraldServiceRegistry(MicroService):
     name = "service.registry"
     host = "127.0.0.1"
     port = 5000
@@ -93,7 +92,7 @@ class ServiceRegistry(PyMicroService):
 
         self.init_access_log(accesslog)
 
-        super(ServiceRegistry, self).__init__()
+        super(EmeraldServiceRegistry, self).__init__()
 
     @public_method
     def ping(self, name, host, port):
@@ -147,7 +146,7 @@ def main(host, port, dburl, accesslog):
 
     Base.metadata.create_all(engine)
 
-    service = ServiceRegistry(host, port, dburl, accesslog)
+    service = EmeraldServiceRegistry(host, port, dburl, accesslog)
     service.start()
 
 
