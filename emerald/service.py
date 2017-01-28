@@ -20,8 +20,6 @@ from . import __version__
 
 STATIC_DIR = os.path.dirname(os.path.abspath(emerald.static.__file__))
 TEMPLATES_DIR = os.path.dirname(os.path.abspath(emerald.templates.__file__))
-print(STATIC_DIR)
-print(TEMPLATES_DIR)
 
 
 # example custom request handler
@@ -31,7 +29,7 @@ class ServicesHandler(RequestHandler):
         session = Session()
         items = [s for s in session.query(Service).filter()]
         session.close()
-        self.render("services.html", version=__version__, services=list(sorted(items, key=lambda x: x.is_alive())))
+        self.render("services.html", version=__version__, services=list(sorted(items, key=lambda x: x.last_seen)))
 
 
 class StatusHandler(RequestHandler):
@@ -95,13 +93,13 @@ class EmeraldServiceRegistry(MicroService):
         super(EmeraldServiceRegistry, self).__init__()
 
     @public_method
-    def ping(self, name, host, port):
+    def ping(self, name, url):
         """Acknowledges the existence of a service. If the service was previously registered (exists in db),
         its stats will be updated (last ping time and name if does not match)"""
         session = Session()
-        existent_service = session.query(Service).filter(Service.host == host, Service.port == port).all()
+        existent_service = session.query(Service).filter(Service.url == url).all()
         if not existent_service:
-            service = Service(name=name, host=host, port=port)
+            service = Service(name=name, url=url)
         else:
             service = existent_service[0]
             service.last_seen = datetime.datetime.now()
@@ -117,7 +115,7 @@ class EmeraldServiceRegistry(MicroService):
         """Locates all existing services by a given glob expression"""
         name = self.glob_to_sql(name)
         session = Session()
-        return [{"host": service.host, "port": service.port}
+        return [service.url
                 for service in session.query(Service).filter(Service.name.like(name)) if service.is_alive()]
 
     def glob_to_sql(self, name):
