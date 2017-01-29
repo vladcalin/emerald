@@ -120,7 +120,7 @@ class EmeraldServiceRegistry(MicroService):
         name = self.glob_to_sql(name)
         session = Session()
         return [service.url
-                for service in session.query(Service).filter(Service.name.like(name)) if service.is_alive()]
+                for service in session.query(Service).filter(Service.name.like(name)) if service.is_alive]
 
     def glob_to_sql(self, name):
         if "*" in name:
