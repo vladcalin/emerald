@@ -25,3 +25,4 @@ def update_services_status(session_class):
             session.add(incident)
 
     session.commit()
+    session.close()

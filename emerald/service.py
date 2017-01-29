@@ -111,6 +111,7 @@ class EmeraldServiceRegistry(MicroService):
 
         session.add(service)
         session.commit()
+        session.close()
 
         return True
 
@@ -119,8 +120,10 @@ class EmeraldServiceRegistry(MicroService):
         """Locates all existing services by a given glob expression"""
         name = self.glob_to_sql(name)
         session = Session()
-        return [service.url
-                for service in session.query(Service).filter(Service.name.like(name)) if service.is_alive]
+        to_return = [service.url
+                     for service in session.query(Service).filter(Service.name.like(name)) if service.is_alive]
+        session.close()
+        return to_return
 
     def glob_to_sql(self, name):
         if "*" in name:
