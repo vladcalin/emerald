@@ -25,6 +25,25 @@
         </div>
     </div>
 
+    <h5>Last 100 incidents</h5>
+
+    <table class="table">
+        <thead>
+        <td>Timestamp</td>
+        <td>Severity</td>
+        <td>Message</td>
+        </thead>
+        <tbody>
+        {% for incident in incidents %}
+        <tr>
+            <td>{{ incident.timestamp }}</td>
+            <td>{{ incident.severity }}</td>
+            <td>{{ incident.message }}</td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
+
     <!-- /page content -->
 </div>
 {% end %}

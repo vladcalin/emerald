@@ -22,7 +22,7 @@
         <td>{{ service.url }}</td>
         <td>{{ service.human_readable_first_seen() }}</td>
         <td>{{ service.human_readable_last_seen() }}</td>
-        <td><span class="{% if service.is_alive() %}green{% else %}red{% end %}-text">{{ service.is_alive() }}</span>
+        <td><span class="{% if service.is_alive %}green{% else %}red{% end %}-text">{{ service.is_alive }}</span>
 
         </td>
     </tr>

@@ -32,8 +32,11 @@ class Service(Base):
     first_seen = Column(DateTime, default=datetime.datetime.now)
     last_seen = Column(DateTime, default=datetime.datetime.now)
 
-    def is_alive(self):
-        return (datetime.datetime.now() - self.last_seen).total_seconds() <= 60 * 3
+    is_alive = Column(Boolean, default=True)
+
+    def update_is_alive(self):
+        print((datetime.datetime.now() - self.last_seen).total_seconds())
+        self.is_alive = (datetime.datetime.now() - self.last_seen).total_seconds() <= 60
 
     def human_readable_first_seen(self):
         return humanize.naturalday(self.first_seen)

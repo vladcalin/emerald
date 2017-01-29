@@ -4,6 +4,7 @@ import time
 import threading
 import logging
 import logging.handlers
+import functools
 
 from tornado.web import RequestHandler
 from tornado.gen import coroutine
@@ -15,14 +16,14 @@ from gemstone import MicroService, public_method, private_api_method
 
 import emerald.static
 import emerald.templates
-from emerald.database import init_database, Service, Base, Session
+from emerald.database import init_database, Service, Base, Session, Incident
+from emerald.tasks import update_services_status
 from . import __version__
 
 STATIC_DIR = os.path.dirname(os.path.abspath(emerald.static.__file__))
 TEMPLATES_DIR = os.path.dirname(os.path.abspath(emerald.templates.__file__))
 
 
-# example custom request handler
 class ServicesHandler(RequestHandler):
     @coroutine
     def get(self):
@@ -32,20 +33,21 @@ class ServicesHandler(RequestHandler):
         self.render("services.html", version=__version__, services=list(sorted(items, key=lambda x: x.last_seen)))
 
 
-class StatusHandler(RequestHandler):
+class IncidentsHandler(RequestHandler):
     @coroutine
     def get(self):
         session = Session()
 
         service_count = session.query(Service).count()
+        incidents = session.query(Incident).filter()
 
         session.close()
         memory_stats = psutil.virtual_memory()
-        self.render("status.html", version=__version__,
+        self.render("incidents.html", version=__version__,
                     max_memory=humanize.naturalsize(memory_stats.total),
                     memory_used=humanize.naturalsize(memory_stats.used),
                     service_count=service_count, cpu_current=psutil.cpu_percent(),
-                    memory_percent=(memory_stats.used / memory_stats.total) * 100)
+                    memory_percent=(memory_stats.used / memory_stats.total) * 100, incidents=incidents)
 
 
 class HomeHandler(RequestHandler):
@@ -65,13 +67,15 @@ class EmeraldServiceRegistry(MicroService):
     host = "127.0.0.1"
     port = 5000
 
-    api_token_header = "X-Api-Token"
     max_parallel_blocking_tasks = os.cpu_count()
+    periodic_tasks = [
+        (functools.partial(update_services_status, Session), 15)
+    ]
 
     extra_handlers = [
         (r"/", IndexHandler),
         (r"/services", ServicesHandler),
-        (r"/status", StatusHandler),
+        (r"/status", IncidentsHandler),
         (r"/home", HomeHandler),
     ]
 
